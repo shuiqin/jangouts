@@ -1,3 +1,5 @@
 bell.mp3 is based on "Bicycle bell 2.wav", licensed by KeyKrusher under the
 Creative Common Attribution license. See more information and get the original
 sound at https://www.freesound.org/people/KeyKrusher/sounds/173000/
+
+The new background of Jangouts was made using photos hand picked from the authorized section of [UI Faces](http://uifaces.com)

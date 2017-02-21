@@ -252,9 +252,13 @@ footer {
     }
     .login-msg {
       margin-top: 1.5em;
-      hr {
-        margin-top: 10px;
-        margin-bottom: 7px;
+      font-size: .9em;
+      .glyphicon {
+        margin-right: 1em;
+      }
+      &:hover {
+        text-decoration: underline;
+        cursor: pointer;
       }
     }
     #signInButton {
