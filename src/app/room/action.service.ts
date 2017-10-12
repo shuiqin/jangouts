@@ -13,7 +13,8 @@ import { Broadcaster } from "../shared";
 import { Feed, FeedsService } from "../feed";
 import { DataChannelService } from "./data-channel.service";
 import { LogService } from "./log.service";
-import { LogEntry } from "./logentry.model";
+
+import { Message, generateMessage } from "../models/message";
 
 @Injectable()
 export class ActionService {
@@ -21,7 +22,8 @@ export class ActionService {
   constructor(private feeds: FeedsService,
               private dataChannel: DataChannelService,
               private logService: LogService,
-              private broadcaster: Broadcaster) { }
+              private broadcaster: Broadcaster
+  ) { }
 
   public enterRoom(feedId: number, display: any, connection: any): void {
     let feed: Feed = new Feed();
@@ -53,7 +55,7 @@ export class ActionService {
     });
     this.feeds.add(feed);
 
-    this.log("publishScreen");
+    this.log({type: "publishScreen"})
   }
 
   public remoteJoin(feedId: number, display: any, connection: any): void {
@@ -66,8 +68,7 @@ export class ActionService {
       dataChannel: this.dataChannel
     });
     this.feeds.add(feed);
-
-    this.log("newRemoteFeed", {feed: feed});
+    this.log({type: "newRemoteFeed", feed});
   }
 
   public destroyFeed(feedId: number): void {
@@ -77,7 +78,7 @@ export class ActionService {
     feed.disconnect();
     this.feeds.destroy(feedId);
 
-    this.log("destroyFeed", {feed: feed});
+    this.log({type: "destroyFeed", feed});
   }
 
   public ignoreFeed(feedId: number): void {
@@ -85,7 +86,7 @@ export class ActionService {
     if (feed === null) { return; }
     feed.ignore();
 
-    this.log("ignoreFeed", {feed: feed});
+    this.log({type: "ignoreFeed", feed});
   }
 
   public stopIgnoringFeed(feedId: number, connection: any): void {
@@ -93,15 +94,13 @@ export class ActionService {
     if (feed === null) { return; }
     feed.stopIgnoring(connection);
 
-    this.log("stopIgnoringFeed", {feed: feed});
+    this.log({type: "stopIgnoringFeed", feed});
   }
 
-  public writeChatMessage(text: string): void {
-    let entry: LogEntry = new LogEntry("chatMsg", {feed: this.feeds.findMain(), text: text});
-    if (entry.hasText()) {
-      this.logService.add(entry);
-      this.dataChannel.sendChatMessage(text);
-    }
+  public writeChatMessage(text: string): Message {
+    const feed = this.feeds.findMain();
+    this.dataChannel.sendChatMessage(text);
+    return generateMessage({type: "chatMsg", feed, text});
   }
 
   public toggleChannel(type: string, feed: Feed = undefined): void {
@@ -114,7 +113,7 @@ export class ActionService {
     }
 
     if (!feed.isPublisher) {
-      this.log("muteRequest", {source: this.feeds.findMain(), target: feed});
+      this.log({type: "muteRequest", source: this.feeds.findMain(), target: feed});
     }
 
     if (feed.isEnabled(type)) {
@@ -144,12 +143,7 @@ export class ActionService {
     feed.setEnabledChannel(type, boolval);
   }
 
-  private log(msg: string, extra?: any): void {
-    let entry: LogEntry = new LogEntry(msg, extra);
-    /*
-     * Log the event
-     */
-    this.logService.add(entry);
+  private log(data): void {
+    this.logService.log(data);
   }
-
 }

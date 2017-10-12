@@ -6,6 +6,10 @@
  */
 
 import { Injectable } from "@angular/core";
+import { Store } from "@ngrx/store";
+import * as chat from "../actions/chat";
+import * as fromRoot from "../reducers";
+import { Message } from "../models/message";
 
 import { LogEntry } from "./logentry.model";
 
@@ -14,15 +18,22 @@ export class LogService {
 
   public entries: Array<LogEntry> = [];
 
-  constructor() { }
+  constructor(private store: Store<fromRoot.IState>) { }
 
+  // XXX
   public add(entry: LogEntry): void {
     this.entries.push(entry);
   }
 
+  // XXX
   public allEntries(): Array<LogEntry> {
     return this.entries;
   }
 
+  public log({type, text, feed, source, target}) {
+    const content = { text, feed, source, target };
+    const message: Message = { timestamp: new Date(), type, content };
+    this.store.dispatch(new chat.AddMessageAction(message));
+  }
 
 }

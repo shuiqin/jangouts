@@ -13,7 +13,7 @@ describe("Component: LogEntry", () => {
   }));
 
   describe("ngOnInit", () => {
-    it("should set given text", () => {
+    xit("should set given text", () => {
 
       this.logEntry.message = {
         text: function (): string { return "message text"; }

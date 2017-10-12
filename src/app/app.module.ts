@@ -12,6 +12,11 @@ import { FormsModule } from "@angular/forms";
 import { HttpModule, JsonpModule } from "@angular/http";
 import { AppComponent } from "./app.component";
 
+import { StoreModule } from "@ngrx/store";
+import { EffectsModule } from "@ngrx/effects"
+import { reducers, metaReducers } from "./reducers";
+import { ChatEffects } from "./effects/chat";
+
 import { ConfigService } from "./config.provider";
 
 import {
@@ -65,7 +70,9 @@ import { routing, appRoutingProviders } from "./app.routing";
       FormsModule, // forms
       HttpModule,
       CommonModule,
-      JsonpModule
+      JsonpModule,
+      StoreModule.forRoot(reducers, { metaReducers }),
+      EffectsModule.forRoot([ChatEffects])
     ],
     providers: [
       appRoutingProviders,

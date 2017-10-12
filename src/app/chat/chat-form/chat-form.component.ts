@@ -6,9 +6,11 @@
  */
 
 import { Component } from "@angular/core";
-
 import { ActionService } from "../../room";
+import { Store } from "@ngrx/store";
 
+import { SendChatMessageAction } from "../../actions/chat";
+import { IState } from "../../reducers/chat";
 
 @Component({
   selector: "jh-chat-form",
@@ -18,10 +20,11 @@ export class ChatFormComponent {
 
   public text: string = null;
 
-  constructor(private actionService: ActionService) {}
+  constructor(public store: Store<IState>, actionService: ActionService) {}
 
   public submit(): void {
-    this.actionService.writeChatMessage(this.text);
+    if (this.text === "") return;
+    this.store.dispatch(new SendChatMessageAction(this.text));
     this.text = null;
   }
 

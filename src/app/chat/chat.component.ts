@@ -12,6 +12,11 @@ import { ChatFormComponent} from "./chat-form";
 import { LogEntryComponent} from "./log-entry";
 import { AutoScrollDirective } from "./message-autoscroll.directive";
 
+import { Store } from "@ngrx/store";
+import { Observable } from "rxjs/Observable";
+import * as fromRoot from "../reducers";
+import { Message } from "../models/message";
+
 @Component({
   selector: "jh-chat",
   template: require("./chat.component.html"),
@@ -22,12 +27,15 @@ import { AutoScrollDirective } from "./message-autoscroll.directive";
     LogEntryComponent
   ]
 })
+
 export class ChatComponent implements OnInit {
+  messages$: Observable<Message[]>;
 
   @Input() public messages: any;
 
-  constructor () { }
+  constructor (private store: Store<fromRoot.IState>) {
+    this.messages$ = store.select(fromRoot.getChatMessages);
+  }
 
   public ngOnInit(): void { }
-
 }

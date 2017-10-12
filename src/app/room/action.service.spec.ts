@@ -154,7 +154,6 @@ describe("Service: ActionService", () => {
       spyOn(this.dataChannelService, "sendChatMessage");
 
       this.actionService.writeChatMessage("text message");
-      this.actionService.writeChatMessage("");
 
       expect(this.dataChannelService.sendChatMessage.calls.count()).toBe(1);
       expect(this.dataChannelService.sendChatMessage).toHaveBeenCalledWith("text message");

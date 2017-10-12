@@ -8,7 +8,8 @@
     "removeComments": false,
     "noImplicitAny": false,
     "suppressImplicitAnyIndexErrors": true,
-    "inlineSourceMap": true
+    "inlineSourceMap": true,
+    "allowSyntheticDefaultImports": true
   },
   "exclude": [
     "gulpfile.ts",
