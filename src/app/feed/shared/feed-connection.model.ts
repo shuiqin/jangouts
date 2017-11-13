@@ -97,8 +97,10 @@ export class FeedConnection {
       }
       media.audioSend = true;
       media.data = true;
+      cfg.data = true;
     } else {
       cfg.audio = false;
+      cfg.data = false;
       media.video = "screen";
       media.audioSend = false;
       media.data = false;

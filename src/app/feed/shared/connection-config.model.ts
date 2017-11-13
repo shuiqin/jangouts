@@ -11,6 +11,7 @@ import * as _ from "lodash";
 export interface IWanted {
   audio?: boolean;
   video?: boolean;
+  data?: boolean;
 }
 
 export interface IOptions {
@@ -32,7 +33,8 @@ export class ConnectionConfig {
   private requested: IWanted;
   private wanted: IWanted = {
     audio: true,
-    video: true
+    video: true,
+    data: true
   };
   private okCallback: any;
 

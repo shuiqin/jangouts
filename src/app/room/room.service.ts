@@ -332,7 +332,7 @@ export class RoomService {
           /*
            * Initial setConfig, needed to complete all the initializations
            */
-          connection.setConfig({values: {audio: true, video: this.config.videoThumbnails}});
+          connection.setConfig({values: {audio: true, data: true, video: this.config.videoThumbnails}});
 
         } else {
           console.log("What has just happened?!");
