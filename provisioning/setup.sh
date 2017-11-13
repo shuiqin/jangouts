@@ -8,8 +8,8 @@ set -x
 #
 # Installing Janus Gateway. This will take a while..."
 #
-sudo zypper ar -f --no-gpgcheck -r http://download.opensuse.org/repositories/network:/jangouts/openSUSE_Leap_42.1/network:jangouts.repo
-sudo zypper -n in -t pattern devel_C_C++
+sudo zypper ar -f --no-gpgcheck -r \
+  https://download.opensuse.org/repositories/network:/jangouts/openSUSE_Leap_42.3/network:jangouts.repo
 sudo zypper -n in janus-gateway
 
 #
@@ -31,17 +31,7 @@ sudo systemctl enable janus.service
 #
 # Installing Jangouts development requirements
 #
-sudo zypper -n in git
-
-if [ ! -d /home/vagrant/.nvm ]
-then
-  curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh | bash
-  source ~/.nvm/nvm.sh
-  nvm install 5
-  nvm alias default 5
-  npm install -g bower
-  npm install -g yarn
-fi
+sudo zypper -n in nodejs6 npm6 git make gcc gcc-c++
 
 #
 # Install NPM packages.
@@ -49,4 +39,6 @@ fi
 [[ ! -d node_modules ]] && mkdir node_modules
 cd /home/vagrant/jangouts
 [[ ! -L node_modules ]] && ln -s ../node_modules
+sudo npm install -g yarn
+sudo npm install -g bower
 yarn install
