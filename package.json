@@ -7,7 +7,7 @@
   "scripts": {
     "postinstall": "npm run bower -- install && npm run typings -- install",
     "server": "npm run server:dev",
-    "server:dev": "npm run webpack-dev-server -- --watch --inline --progress --port 4000",
+    "server:dev": "npm run webpack-dev-server -- --watch-poll 1000 --inline --progress --port 4000 --public",
     "server:dev:hmr": "npm run server:dev -- --hot",
     "server:prod": "http-server dist --cors -p 4000",
     "clean": "npm cache clean && npm run rimraf -- node_modules bower_components doc typings coverage dist",
