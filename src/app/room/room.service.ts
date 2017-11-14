@@ -32,12 +32,14 @@ export class RoomService {
 
   private server: Array<string>;
 
-  constructor(private config: ConfigService,
-              private feeds: FeedsService,
-              private dataChannel: DataChannelService,
-              private actionService: ActionService,
-              private screenShareService: ScreenShareService,
-              private broadcaster: Broadcaster) {
+  constructor(
+    private config: ConfigService,
+    private feeds: FeedsService,
+    private dataChannel: DataChannelService,
+    private actionService: ActionService,
+    private screenShareService: ScreenShareService,
+    private broadcaster: Broadcaster
+  ) {
 
     this.server = this.config.janusServer;
 
@@ -139,11 +141,14 @@ export class RoomService {
 
           connection.publish({
             muted: this.startMuted,
+            success: (): void => this.feeds.updateMainFeed(),
             error: (): void => {
               connection.publish({
                 noCamera: true,
                 muted: this.startMuted
-              }); }
+              });
+              this.feeds.updateMainFeed();
+            }
           });
 
           /*
@@ -181,6 +186,7 @@ export class RoomService {
            */
           } else if (msg.configured) {
             connection.confirmConfig();
+            this.feeds.updateMainFeed();
           /*
            * The server reported an error
            */
@@ -486,5 +492,4 @@ export class RoomService {
       }, 4000);
     });
   }
-
 }

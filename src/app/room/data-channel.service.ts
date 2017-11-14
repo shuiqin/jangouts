@@ -9,7 +9,6 @@ import { Injectable } from "@angular/core";
 
 import { Broadcaster } from "../shared";
 import { Feed, FeedsService } from "../feed";
-import { LogEntry } from "./logentry.model";
 import { LogService } from "./log.service";
 
 @Injectable()
@@ -24,37 +23,28 @@ export class DataChannelService {
     let type: string = msg.type;
     let content: any = msg.content;
     let feed: Feed;
-    let logEntry: LogEntry;
 
     if (type === "chatMsg") {
-
-      logEntry = new LogEntry("chatMsg", {
-        feed: this.feedsService.find(remoteId),
-        text: content
-      });
-
-      if (logEntry.hasText()) {
-        this.logService.add(logEntry);
-      }
+      let feed = this.feedsService.find(remoteId);
+      this.logService.log({type, text: content, feed, source: null, target: null});
 
     } else if (type === "muteRequest") {
 
-      feed = this.feedsService.find(content.target);
+      let source = this.feedsService.find(remoteId);
+      let target = this.feedsService.find(content.target);
 
-      if (feed.isPublisher) {
-         feed.setEnabledChannel("audio", false, {
+      if (target.isPublisher) {
+         target.setEnabledChannel("audio", false, {
            after: () => {
+             // NGRX: TODO
+             this.feedsService.updateIFeed(target);
              this.broadcaster.broadcast("muted.byRequest");
            }
          });
       }
 
-      // log the event
-      logEntry = new LogEntry("muteRequest", {
-        source: this.feedsService.find(remoteId),
-        target: feed
-      });
-      this.logService.add(logEntry);
+      // TODO: improve API
+      this.logService.log({type, text: null, feed: null, source, target});
 
     } else if (type === "statusUpdate") {
 
@@ -62,6 +52,8 @@ export class DataChannelService {
 
       if (feed && !feed.isPublisher) {
         feed.setStatus(content.status);
+        // NGRX: ?
+        this.feedsService.updateIFeed(feed);
       }
 
     } else {

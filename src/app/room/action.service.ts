@@ -8,6 +8,7 @@
 import * as _ from "lodash";
 
 import { Injectable } from "@angular/core";
+import { Store } from "@ngrx/store";
 
 import { Broadcaster } from "../shared";
 import { Feed, FeedsService } from "../feed";
@@ -16,13 +17,19 @@ import { LogService } from "./log.service";
 
 import { Message, generateMessage } from "../models/message";
 
+import * as feeds from "../actions/feeds";
+import * as fromRoot from "../reducers";
+import { IFeed, feedToIFeed } from "../models/feed";
+
 @Injectable()
 export class ActionService {
 
-  constructor(private feeds: FeedsService,
-              private dataChannel: DataChannelService,
-              private logService: LogService,
-              private broadcaster: Broadcaster
+  constructor(
+    private feeds: FeedsService,
+    private dataChannel: DataChannelService,
+    private logService: LogService,
+    private broadcaster: Broadcaster,
+    private store: Store<fromRoot.IState>
   ) { }
 
   public enterRoom(feedId: number, display: any, connection: any): void {
@@ -35,6 +42,7 @@ export class ActionService {
       dataChannel: this.dataChannel
     });
     this.feeds.add(feed, {main: true});
+    this.store.dispatch(new feeds.EnterRoomAction(feedToIFeed(feed)));
   }
 
   public leaveRoom(): void {
@@ -68,6 +76,7 @@ export class ActionService {
       dataChannel: this.dataChannel
     });
     this.feeds.add(feed);
+    this.store.dispatch(new feeds.AddFeedAction(feedToIFeed(feed)));
     this.log({type: "newRemoteFeed", feed});
   }
 
@@ -78,6 +87,7 @@ export class ActionService {
     feed.disconnect();
     this.feeds.destroy(feedId);
 
+    this.store.dispatch(new feeds.DestroyFeedAction(feedId));
     this.log({type: "destroyFeed", feed});
   }
 

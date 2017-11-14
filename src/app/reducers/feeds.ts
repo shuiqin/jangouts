@@ -34,6 +34,13 @@ export function reducer(state: IState = initialState, action: feeds.Actions): IS
       };
     }
 
+    case feeds.ADD_FEED: {
+      return {
+        ...state,
+        feeds: [...state.feeds, action.payload]
+      };
+    }
+
     case feeds.UPDATE_FEED: {
       const newFeed: IFeed = action.payload;
       return {
@@ -42,6 +49,15 @@ export function reducer(state: IState = initialState, action: feeds.Actions): IS
           return oldFeed.id === newFeed.id ? newFeed : oldFeed;
         })
       };
+    }
+
+    case feeds.DESTROY_FEED: {
+      const feedId: Number = action.payload;
+
+      return {
+        ...state,
+        feeds: state.feeds.filter(feed => feed.id !== feedId)
+      }
     }
 
     default: {

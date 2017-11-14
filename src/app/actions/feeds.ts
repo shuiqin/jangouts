@@ -2,16 +2,23 @@ import { Action } from "@ngrx/store";
 import { IFeed } from "../models/feed";
 
 export const ENTER_ROOM = "[Feed] Enter Room";
+export const ADD_FEED = "[Feed] Add Feed"
 export const REMOTE_JOIN = "[Feed] Remote Join";
 export const TOGGLE_CHANNEL = "[Feed] Toggle Channel";
-export const UPDATE_FEED = "[Feed] Update Feed"
-export const REFRESH_FEED = "[Feed] Refresh feed"
+export const UPDATE_FEED = "[Feed] Update Feed";
+export const DESTROY_FEED = "[Feed] Destroy Feed";
 // export const IGNORE_FEED = "[Feed] Ignore Feed";
 // export const UNIGNORE_FEED = "[Feed] Un-ignore Feed";
 // export const SET_MEDIA = "[Feed] Set media";
 
 export class EnterRoomAction implements Action {
   readonly type = ENTER_ROOM;
+
+  constructor(public payload: IFeed) {}
+}
+
+export class AddFeedAction implements Action {
+  readonly type = ADD_FEED;
 
   constructor(public payload: IFeed) {}
 }
@@ -39,14 +46,16 @@ export class UpdateFeedAction implements Action {
   constructor(public payload: IFeed) {}
 }
 
-export class RefreshFeedAction implements Action {
-  readonly type = REFRESH_FEED;
+export class DestroyFeedAction implements Action {
+  readonly type = DESTROY_FEED;
 
   constructor(public payload: Number) {}
 }
 
 export type Actions
   = EnterRoomAction
+  | AddFeedAction
   | RemoteJoinAction
   | ToggleChannelAction
   | UpdateFeedAction
+  | DestroyFeedAction

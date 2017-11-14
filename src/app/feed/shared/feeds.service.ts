@@ -8,7 +8,13 @@
 import * as _ from "lodash";
 
 import { Injectable } from "@angular/core";
+import { Store } from "@ngrx/store";
+
 import { Feed } from "./feed.model";
+import { IFeed, feedToIFeed } from "../../models/feed";
+import * as fromRoot from "../../reducers";
+import { UpdateFeedAction } from "../../actions/feeds";
+
 
 /**
  * Feeds collection
@@ -19,7 +25,9 @@ export class FeedsService {
   private mainFeed: Feed = null;
   private feeds: any = {};
 
-  constructor () { }
+  constructor (
+    private store: Store<fromRoot.IState>
+  ) { }
 
   /**
    * @param id  id of the feed to find
@@ -123,6 +131,16 @@ export class FeedsService {
     return <Feed>_.find(this.allFeeds(), (f: Feed) => {
       return f.getSpeaking();
     });
+  }
+
+  public updateIFeed(feed: Feed): void {
+    const iFeed = feedToIFeed(feed);
+    this.store.dispatch(new UpdateFeedAction(iFeed));
+  }
+
+  public updateMainFeed(): void {
+    const feed = this.findMain();
+    this.updateIFeed(feed);
   }
 
 }
