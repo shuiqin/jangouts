@@ -31,11 +31,11 @@
         id="main-video"
         class="col-md-6"
         style="margin: 20px 0;"
-        [feed]="highlightedFeed()"
+        [feed]="highlighted"
         [ngClass]="{mirrored: mirrored()}">
       </jh-main-feed>
 
-      <jh-chat [messages]="logEntries()" class="col-md-6" style="margin: 20px 0;"></jh-chat>
+      <jh-chat [messages]="messages$ | async" class="col-md-6" style="margin: 20px 0;"></jh-chat>
     </div>
 
     <div class="row">
@@ -45,7 +45,7 @@
             [feed]="f"
             (toggleHighlight)="toggleHighlightedFeed($event)"
             [highlighted]="isHighlighted(f)"
-            *ngFor="let f of feeds()">
+            *ngFor="let f of (feeds$ | async)">
             <!--[FIXME] - Fix highlighted-by-user attr-->
             <!--[highlighted-by-user]="isHighlightedByUser(f)"-->
           </jh-feed>

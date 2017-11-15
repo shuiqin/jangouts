@@ -1,7 +1,7 @@
 <figure
   *ngIf="feed"
   [jhSendPics]="feed"
-  [jhSetVideoSubscription]="videoThumbnails || highlighted || !feed.isSilent()"
+  [jhSetVideoSubscription]="videoThumbnails || highlighted || !feed.isSilent"
   [initial]="videoThumbnails || highlighted"
   [feed]="feed"
   [ngClass]="{'own-feed': feed.isPublisher, sticky: highlightedByUser}">
@@ -12,11 +12,11 @@
       class="face"
       [ngClass]="{mirrored: mirrored}"
       [hidden]="thumbnailTag() !== 'video'"
-      [jhVideoStream]="feed.getStream()"
+      [jhVideoStream]="getStream()"
       [mutted]="feed && feed.isPublisher">
     </video>
     <img
-      [src]="feed.getPicture()"
+      [src]="feed.picture"
       class="face"
       [ngClass]="{mirrored: mirrored}"
       [hidden]="thumbnailTag() !== 'picture'">

@@ -113,6 +113,11 @@ export class ActionService {
     return generateMessage({type: "chatMsg", feed, text});
   }
 
+  public toggleChannelById(type: string, feedId: number): void {
+    let feed: Feed = this.feeds.find(feedId);
+    this.toggleChannel(type, feed);
+  }
+
   public toggleChannel(type: string, feed: Feed = undefined): void {
     /*
      * If no feed is provided, we are muting ourselves
@@ -126,21 +131,8 @@ export class ActionService {
       this.log({type: "muteRequest", source: this.feeds.findMain(), target: feed});
     }
 
-    if (feed.isEnabled(type)) {
-      let callback: any = null;
-      /*
-       * If we are muting the main feed (the only publisher that can be
-       * actually muted) raise a signal
-       */
-      if (type === "audio" && feed.isPublisher) {
-        callback = (): void => {
-          this.broadcaster.broadcast("muted.byUser");
-        };
-      }
-      feed.setEnabledChannel(type, false, {after: callback});
-    } else {
-      feed.setEnabledChannel(type, true);
-    }
+    const callback = () => this.feeds.updateIFeed(feed);
+    feed.setEnabledChannel(type, !feed.isEnabled(type), {after: callback});
   }
 
   /**

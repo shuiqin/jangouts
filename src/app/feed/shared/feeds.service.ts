@@ -133,14 +133,32 @@ export class FeedsService {
     });
   }
 
+  public getStream(feedId: number): any {
+    const feed = this.find(feedId);
+    if (feed === null) return null;
+    return feed.getStream();
+  }
+
+
+  public setVideoSubscription(feedId: number, value: boolean): void {
+    let feed = this.find(feedId);
+    if (feed === null) return;
+    feed.setVideoSubscription(value);
+  }
+
+  public updateLocalPic(feedId: number, data: string): void {
+    let feed = this.find(feedId);
+    if (feed === null) return;
+    feed.updateLocalPic(data);
+  }
+
   public updateIFeed(feed: Feed): void {
     const iFeed = feedToIFeed(feed);
     this.store.dispatch(new UpdateFeedAction(iFeed));
   }
 
   public updateMainFeed(): void {
-    const feed = this.findMain();
+    let feed = this.findMain();
     this.updateIFeed(feed);
   }
-
 }

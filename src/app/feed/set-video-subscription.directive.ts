@@ -7,29 +7,31 @@
 
 import { Directive, ElementRef, Input, OnInit } from "@angular/core";
 
-import { Feed } from "./shared";
+import { FeedsService } from "./shared/feeds.service";
+import { IFeed } from "../models/feed";
 
 @Directive({ selector: "[jhSetVideoSubscription]" })
 export class SetVideoSubscriptionDirective implements OnInit {
 
-  @Input() public feed: Feed;
+  @Input() public feed: IFeed;
   @Input() public initial: boolean;
 
   private el: any;
 
-  constructor (el: ElementRef) {
+  constructor (el: ElementRef, private feedsService: FeedsService) {
     this.el = el.nativeElement;
   }
 
   public ngOnInit(): void {
-    this.feed.setVideoSubscription(this.initial);
+    // NGRX: FIXME: is this needed? It will reset feeds status.
+    //this.feedsService.setVideoSubscription(this.feed.id, this.initial);
   }
 
   @Input("jhSetVideoSubscription")
   set setVideoSubscription(video: boolean) {
     /* For subscribers we have to manage the video subscription */
     if (!this.feed.isPublisher) {
-      this.feed.setVideoSubscription(video);
+      this.feedsService.setVideoSubscription(this.feed.id, video);
     }
   }
 

@@ -6,12 +6,15 @@
  */
 
 import { Component, OnInit, Output, Input, EventEmitter } from "@angular/core";
+import { Store } from "@ngrx/store";
 
 import { Broadcaster } from "../shared";
-import { Feed } from "./shared/feed.model";
+import { FeedsService } from "./shared/feeds.service";
 import { VideoStreamDirective } from "./shared/videostream.directive";
 import { SendPicsDirective } from "./send-pics.directive";
 import { SetVideoSubscriptionDirective } from "./set-video-subscription.directive";
+
+import { IFeed } from "../models/feed";
 
 import {
   AudioButtonComponent,
@@ -34,14 +37,14 @@ import {
 })
 export class FeedComponent implements OnInit {
 
-  @Input() public feed: Feed;
-  @Output() public toggleHighlight: EventEmitter<Feed> = new EventEmitter<Feed>();
+  @Input() public feed: IFeed;
+  @Output() public toggleHighlight: EventEmitter<number> = new EventEmitter<number>();
   @Input() public highlighted: boolean;
   @Input() public highlightedByUser: boolean;
 
   private mirrored: boolean = false;
 
-  constructor(private broadcaster: Broadcaster) { }
+  constructor(private broadcaster: Broadcaster, private feedsService: FeedsService) { }
 
   public ngOnInit(): void {
     this.mirrored = (this.feed.isPublisher && !this.feed.isLocalScreen);
@@ -52,20 +55,20 @@ export class FeedComponent implements OnInit {
     /*
      * Broadcast only if muted (check for false, undefined means still connecting)
      */
-    if (this.feed.isPublisher && !this.feed.isLocalScreen && val && !this.feed.getAudioEnabled()) {
+    if (this.feed.isPublisher && !this.feed.isLocalScreen && val && !this.feed.audioEnabled) {
       this.broadcaster.broadcast("speaking");
     }
   }
 
   public thumbnailTag(): string {
     if (this.highlighted || this.feed.isIgnored) { return "placeholder"; }
-    if (!this.feed.getVideoEnabled()) { return "placeholder"; }
+    if (!this.feed.videoEnabled) { return "placeholder"; }
     if (this.feed.isPublisher) { return "video"; }
 
-    if (this.feed.getVideoSubscription()) {
+    if (this.feed.videoSubscription) {
       return "video";
     } else {
-      if (this.feed.getPicture()) {
+      if (this.feed.picture) {
         return "picture";
       } else {
         return "placeholder";
@@ -73,8 +76,11 @@ export class FeedComponent implements OnInit {
     }
   }
 
-  public click (): void {
-    this.toggleHighlight.emit(this.feed);
+  public click(): void {
+    this.toggleHighlight.emit(this.feed.id);
   }
 
+  public getStream(): any {
+    return this.feedsService.getStream(this.feed.id);
+  }
 }
