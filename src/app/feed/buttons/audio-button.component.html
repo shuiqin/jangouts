@@ -1,7 +1,7 @@
 <button
   type="button"
   class="btn btn-xs"
-  [ngClass]="{'btn-primary': feed.getSpeaking(), 'btn-default': !feed.getSpeaking()}"
+  [ngClass]="{'btn-primary': feed.speaking, 'btn-default': !feed.speaking}"
   (click)="toggle()"
   title="Disable audio"
   *ngIf="showsDisable()">

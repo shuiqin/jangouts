@@ -8,7 +8,7 @@
 import { Component, OnInit, Input, Inject, forwardRef } from "@angular/core";
 
 import { RoomService } from "../../room";
-import { Feed } from "../shared";
+import { IFeed } from "../../models/feed";
 
 @Component({
   selector: "jh-unpublish-button",
@@ -16,7 +16,7 @@ import { Feed } from "../shared";
 })
 export class UnpublishButtonComponent implements OnInit {
 
-  @Input() public feed: Feed;
+  @Input() public feed: IFeed;
 
   /* Needed in order to fix import barrels error https://github.com/angular/angular.io/issues/1301 */
   constructor(@Inject(forwardRef(() => RoomService)) private roomService: RoomService) { } // tslint:disable-line

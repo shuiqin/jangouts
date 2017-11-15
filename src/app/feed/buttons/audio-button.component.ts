@@ -7,8 +7,8 @@
 
 import { Component, OnInit, Input, Inject, forwardRef } from "@angular/core";
 
-import { RoomService } from "../../room";
-import { Feed } from "../shared";
+import { ActionService } from "../../room/action.service";
+import { IFeed } from "../../models/feed";
 import { Broadcaster } from "../../shared";
 
 @Component({
@@ -17,31 +17,31 @@ import { Broadcaster } from "../../shared";
 })
 export class AudioButtonComponent implements OnInit {
 
-  @Input() public feed: Feed;
+  @Input() public feed: IFeed;
 
   /* Needed in order to fix import barrels error https://github.com/angular/angular.io/issues/1301 */
-  constructor(@Inject(forwardRef(() => RoomService)) private roomService: RoomService, // tslint:disable-line
+  constructor(@Inject(forwardRef(() => ActionService)) private actionService: ActionService, // tslint:disable-line
               private broadcaster: Broadcaster) { }
 
   public ngOnInit(): void { }
 
   public toggle(): void {
-    this.roomService.toggleChannel("audio", this.feed);
-    if (this.feed.isPublisher && !this.feed.isLocalScreen && !this.feed.getAudioEnabled()) {
+    this.actionService.toggleChannelById("audio", this.feed.id);
+    if (this.feed.isPublisher && !this.feed.isLocalScreen && !this.feed.audioEnabled) {
       this.broadcaster.broadcast("dismissLastNotification");
     }
   }
 
   public showsEnable(): boolean {
-    return (this.feed.isPublisher && !this.feed.isLocalScreen && !this.feed.getAudioEnabled());
+    return (this.feed.isPublisher && !this.feed.isLocalScreen && !this.feed.audioEnabled);
   }
 
   public showsDisable(): boolean {
-    return (!this.feed.isIgnored && this.feed.getAudioEnabled());
+    return (!this.feed.isIgnored && this.feed.audioEnabled);
   }
 
   public showsAudioOff(): boolean {
-    return !(this.feed.isPublisher || this.feed.isIgnored || this.feed.getAudioEnabled());
+    return !(this.feed.isPublisher || this.feed.isIgnored || this.feed.audioEnabled);
   }
 
 }
