@@ -2,7 +2,10 @@ import { IFeed } from "../models/feed";
 import * as feeds from "../actions/feeds";
 
 export interface IHighlight {
+  /* Feed currently highlighted, either manually (if byUser is set) or
+   * automatically (if byUser is null) */
   current: number;
+  /* Feed explicitly selected as highlight by the user (using the UI) */
   byUser: number;
 }
 
@@ -52,12 +55,21 @@ export function reducer(state: IState = initialState, action: feeds.Actions): IS
     }
 
     case feeds.DESTROY_FEED: {
-      const feedId: Number = action.payload;
+      const feedId: number = action.payload;
 
       return {
         ...state,
         feeds: state.feeds.filter(feed => feed.id !== feedId)
       }
+    }
+
+    case feeds.HIGHLIGHT_FEED: {
+      const feedId: number = action.payload;
+
+      return {
+        ...state,
+        highlight: { current: feedId, byUser: feedId }
+      };
     }
 
     default: {
@@ -67,7 +79,8 @@ export function reducer(state: IState = initialState, action: feeds.Actions): IS
 }
 
 export const getFeeds = (state: IState) => state.feeds;
+// export const getSpeaking = (state: IState) => state.feeds.filter(f => f.speaking);
 export const getHighlightedFeed = (state: IState) => {
-  console.log("Searching for", state.highlight.current);
+  // NGRX: TODO
   return state.feeds.find(f => f.id === state.highlight.current);
 }

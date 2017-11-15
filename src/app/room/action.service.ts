@@ -153,6 +153,10 @@ export class ActionService {
     feed.setEnabledChannel(type, boolval);
   }
 
+  public highlightFeed(feedId: number): void {
+    this.store.dispatch(new feeds.HighlightFeedAction(feedId));
+  }
+
   private log(data): void {
     this.logService.log(data);
   }
