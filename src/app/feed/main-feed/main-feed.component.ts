@@ -7,7 +7,9 @@
 
 import { Component, Input } from "@angular/core";
 
-import { Feed, VideoStreamDirective } from "../shared";
+import { VideoStreamDirective } from "../shared";
+import { FeedsService } from "../shared/feeds.service";
+import { IFeed } from "../../models/feed";
 
 @Component({
   selector: "jh-main-feed",
@@ -16,9 +18,12 @@ import { Feed, VideoStreamDirective } from "../shared";
 })
 export class MainFeedComponent {
 
-  @Input() public feed: Feed;
+  @Input() public feed: IFeed;
   @Input() public message: string;
 
-  constructor() { }
+  constructor(private feedsService: FeedsService) { }
 
+  public getStream(): any {
+    return this.feedsService.getStream(this.feed.id);
+  }
 }
