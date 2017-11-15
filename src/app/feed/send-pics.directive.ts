@@ -7,15 +7,16 @@
 
 import { Directive, ElementRef, Input, OnInit} from "@angular/core";
 
-import { Feed } from "./shared";
+import { FeedsService } from "./shared/feeds.service";
+import { IFeed } from "../models/feed";
 
 @Directive({ selector: "[jhSendPics]" })
 export class SendPicsDirective implements OnInit {
 
-  @Input("jhSendPics") public feed: Feed; // tslint:disable-line
+  @Input("jhSendPics") public feed: IFeed; // tslint:disable-line
   private el: any;
 
-  constructor (el: ElementRef) {
+  constructor (el: ElementRef, private feedsService: FeedsService) {
     this.el = el.nativeElement;
   }
 
@@ -53,13 +54,13 @@ export class SendPicsDirective implements OnInit {
     };
   }
 
-  public takePic(feed: Feed, canvas: HTMLCanvasElement, context: any, video: HTMLVideoElement): void {
+  public takePic(feed: IFeed, canvas: HTMLCanvasElement, context: any, video: HTMLVideoElement): void {
     let width: number = canvas.width;
     if (video.videoHeight) {
       let height: number = width * video.videoHeight / video.videoWidth;
       canvas.height = height;
       context.drawImage(video, 0, 0, width, height);
-      feed.updateLocalPic(canvas.toDataURL("image/jpeg", 0.4));
+      this.feedsService.updateLocalPic(feed.id, canvas.toDataURL("image/jpeg", 0.4));
     }
   }
 
