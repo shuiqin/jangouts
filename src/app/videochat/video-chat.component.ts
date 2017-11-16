@@ -68,4 +68,7 @@ export class VideoChatComponent implements OnInit {
     console.warn("Not implemented yet");
   }
 
+  public trackByFeed(index: number, feed: IFeed) {
+    return feed.id;
+  }
 }

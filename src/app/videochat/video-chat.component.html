@@ -45,7 +45,7 @@
             [feed]="f"
             (toggleHighlight)="toggleHighlightedFeed($event)"
             [highlighted]="isHighlighted(f)"
-            *ngFor="let f of (feeds$ | async)">
+            *ngFor="let f of (feeds$ | async); trackBy: trackByFeed">
             <!--[FIXME] - Fix highlighted-by-user attr-->
             <!--[highlighted-by-user]="isHighlightedByUser(f)"-->
           </jh-feed>
