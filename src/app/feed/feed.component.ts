@@ -38,9 +38,10 @@ import {
 export class FeedComponent implements OnInit {
 
   @Input() public feed: IFeed;
-  @Output() public toggleHighlight: EventEmitter<number> = new EventEmitter<number>();
-  @Input() public highlighted: boolean;
-  @Input() public highlightedByUser: boolean;
+  @Input() public sticky: boolean;
+  @Input() public stickyByUser: boolean;
+
+  @Output() public toggleSticky: EventEmitter<number> = new EventEmitter<number>();
 
   private mirrored: boolean = false;
 
@@ -61,7 +62,7 @@ export class FeedComponent implements OnInit {
   }
 
   public thumbnailTag(): string {
-    if (this.highlighted || this.feed.isIgnored) { return "placeholder"; }
+    if (this.sticky || this.feed.isIgnored) { return "placeholder"; }
     if (!this.feed.videoEnabled) { return "placeholder"; }
     if (this.feed.isPublisher) { return "video"; }
 
@@ -77,7 +78,7 @@ export class FeedComponent implements OnInit {
   }
 
   public click(): void {
-    this.toggleHighlight.emit(this.feed.id);
+    this.toggleSticky.emit(this.feed.id);
   }
 
   public getStream(): any {

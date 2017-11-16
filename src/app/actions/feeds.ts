@@ -7,7 +7,7 @@ export const REMOTE_JOIN = "[Feed] Remote Join";
 export const TOGGLE_CHANNEL = "[Feed] Toggle Channel";
 export const UPDATE_FEED = "[Feed] Update Feed";
 export const DESTROY_FEED = "[Feed] Destroy Feed";
-export const HIGHLIGHT_FEED = "[Feed] Highlight Feed";
+export const STICK_FEED = "[Feed] Stick Feed";
 // export const IGNORE_FEED = "[Feed] Ignore Feed";
 // export const UNIGNORE_FEED = "[Feed] Un-ignore Feed";
 // export const SET_MEDIA = "[Feed] Set media";
@@ -53,8 +53,8 @@ export class DestroyFeedAction implements Action {
   constructor(public payload: number) {}
 }
 
-export class HighlightFeedAction implements Action {
-  readonly type = HIGHLIGHT_FEED;
+export class StickFeedAction implements Action {
+  readonly type = STICK_FEED;
 
   constructor(public payload: number) {}
 }
@@ -66,4 +66,4 @@ export type Actions
   | ToggleChannelAction
   | UpdateFeedAction
   | DestroyFeedAction
-  | HighlightFeedAction
+  | StickFeedAction

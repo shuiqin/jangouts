@@ -28,7 +28,13 @@ export const getFeeds = createSelector(
   getFeedsState,
   fromFeeds.getFeeds
 );
-export const getHighlightedFeed = createSelector(
+
+export const getStickyFeed = createSelector(
   getFeedsState,
-  fromFeeds.getHighlightedFeed
+  fromFeeds.getStickyFeed
 );
+
+export const getStickyFeedByUser = createSelector(
+  getFeedsState,
+  fromFeeds.getStickyFeedByUser
+)

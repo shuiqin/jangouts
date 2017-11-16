@@ -25,13 +25,12 @@
   <jh-notification></jh-notification>
 
   <div id="videochat-playroom" class="row">
-
     <div class="row">
       <jh-main-feed
         id="main-video"
         class="col-md-6"
         style="margin: 20px 0;"
-        [feed]="highlighted"
+        [feed]="sticky"
         [ngClass]="{mirrored: mirrored()}">
       </jh-main-feed>
 
@@ -43,11 +42,10 @@
         <div id="thumbnails" class="panel" style="margin: 0 20px 20px 20px; padding: 8px;">
           <jh-feed
             [feed]="f"
-            (toggleHighlight)="toggleHighlightedFeed($event)"
-            [highlighted]="isHighlighted(f)"
+            (toggleSticky)="toggleStickyFeed($event)"
+            [sticky]="isSticky(f)"
+            [stickyByUser]="isStickyByUser(f)"
             *ngFor="let f of (feeds$ | async); trackBy: trackByFeed">
-            <!--[FIXME] - Fix highlighted-by-user attr-->
-            <!--[highlighted-by-user]="isHighlightedByUser(f)"-->
           </jh-feed>
 
             <!-- [TODO] - find a way to do orderby with angular2 -->

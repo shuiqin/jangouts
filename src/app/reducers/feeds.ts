@@ -1,24 +1,25 @@
 import { IFeed } from "../models/feed";
 import * as feeds from "../actions/feeds";
+import { createSelector } from '@ngrx/store';
 
-export interface IHighlight {
+export interface ISticky {
   /* Feed currently highlighted, either manually (if byUser is set) or
    * automatically (if byUser is null) */
-  current: number;
+  feedId: number;
   /* Feed explicitly selected as highlight by the user (using the UI) */
-  byUser: number;
+  byUser: boolean;
 }
 
 export interface IState {
   feeds: IFeed[];
-  highlight: IHighlight;
+  sticky: ISticky;
 }
 
 const initialState: IState = {
   feeds: [],
-  highlight: {
-    current: null,
-    byUser: null
+  sticky: {
+    feedId: null,
+    byUser: false
   }
 };
 
@@ -30,9 +31,9 @@ export function reducer(state: IState = initialState, action: feeds.Actions): IS
       return {
         ...state,
         feeds: [action.payload],
-        highlight: {
-          current: action.payload.id,
-          byUser: null
+        sticky: {
+          feedId: action.payload.id,
+          byUser: false
         }
       };
     }
@@ -60,15 +61,20 @@ export function reducer(state: IState = initialState, action: feeds.Actions): IS
       return {
         ...state,
         feeds: state.feeds.filter(feed => feed.id !== feedId)
-      }
+      };
     }
 
-    case feeds.HIGHLIGHT_FEED: {
-      const feedId: number = action.payload;
+    case feeds.STICK_FEED: {
+      const newFeedId: number = action.payload;
+      const { feedId, byUser }: ISticky = state.sticky;
 
       return {
         ...state,
-        highlight: { current: feedId, byUser: feedId }
+        sticky: {
+          ...state.sticky,
+          feedId: newFeedId,
+          byUser: (feedId === newFeedId) ? !byUser : byUser
+        }
       };
     }
 
@@ -78,9 +84,28 @@ export function reducer(state: IState = initialState, action: feeds.Actions): IS
   }
 }
 
+const getFeedById = (state: IState, feedId: number) => state.feeds.find(f => f.id === feedId);
+
 export const getFeeds = (state: IState) => state.feeds;
-// export const getSpeaking = (state: IState) => state.feeds.filter(f => f.speaking);
-export const getHighlightedFeed = (state: IState) => {
-  // NGRX: TODO
-  return state.feeds.find(f => f.id === state.highlight.current);
+
+export const getOwnFeed = (state: IState) => state.feeds[0];
+
+export const getStickyFeed = (state: IState) => {
+  const { byUser, feedId }: ISticky = state.sticky;
+  const speaking: IFeed = state.feeds.find(f => f.speaking);
+  const feed: IFeed = getFeedById(state, feedId);
+
+  if (feed === undefined) { // user disconnected
+    return (speaking && speaking.videoEnabled) ? speaking : getOwnFeed(state);
+  }
+
+  return byUser ? feed : (speaking || feed);
+};
+
+export const getStickyFeedByUser = (state: IState) => {
+  const { byUser, feedId }: ISticky = state.sticky;
+  if (byUser) {
+    return getFeedById(state, feedId);
+  }
+  return undefined;
 }

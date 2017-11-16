@@ -4,7 +4,7 @@
   [jhSetVideoSubscription]="videoThumbnails || highlighted || !feed.isSilent"
   [initial]="videoThumbnails || highlighted"
   [feed]="feed"
-  [ngClass]="{'own-feed': feed.isPublisher, sticky: highlightedByUser}">
+  [ngClass]="{'own-feed': feed.isPublisher, sticky: stickyByUser}">
   <div class="thumb"
        (click)="click()">
     <video

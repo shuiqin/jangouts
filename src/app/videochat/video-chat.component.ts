@@ -21,45 +21,54 @@ import { ActionService } from "../room/action.service";
 export class VideoChatComponent implements OnInit {
   feeds$: Observable<IFeed[]>;
   messages$: Observable<Message[]>;
-  highlight$: Observable<IFeed>;
+  stickySubscription: any;
+  stickyByUserSubscription: any;
 
-  private highlighted: IFeed;
+  private sticky: IFeed;
+  private stickyByUser: IFeed;
 
   constructor(
     private store: Store<fromRoot.IState>,
     private actionService: ActionService
   ) {
-    this.feeds$ = store.select(fromRoot.getFeeds);
-
-    this.messages$ = store.select(fromRoot.getChatMessages);
-
-    this.highlight$ = store.select(fromRoot.getHighlightedFeed);
-    this.highlight$.subscribe(val => {
-      this.highlighted = (val === undefined) ? undefined : val;
-    });
   }
 
-  public ngOnInit(): void { }
+  public ngOnInit(): void {
+    this.feeds$ = this.store.select(fromRoot.getFeeds);
+    this.messages$ = this.store.select(fromRoot.getChatMessages);
+
+    this.stickySubscription = this.store.select(fromRoot.getStickyFeed)
+      .subscribe(v => this.sticky = v);
+
+    this.stickyByUserSubscription = this.store.select(fromRoot.getStickyFeedByUser)
+      .subscribe(v => this.stickyByUser = v);
+  }
+
+  public ngOnDestroy(): void {
+    this.stickySubscription.unsubscribe();
+    this.stickyByUserSubscription.unsubscribe();
+  }
 
   public mirrored(): boolean {
-    if (this.highlighted) {
-      return (this.highlighted.isPublisher && !this.highlighted.isLocalScreen);
+    if (this.sticky) {
+      return (this.sticky.isPublisher && !this.sticky.isLocalScreen);
     } else {
       return false;
     }
   }
 
-  public toggleHighlightedFeed(feedId: number): void {
-    this.actionService.highlightFeed(feedId);
+  public toggleStickyFeed(feedId: number): void {
+    this.actionService.toggleStickyFeed(feedId);
   }
 
-  public isHighlighted(feed: IFeed): boolean {
-    if (this.highlighted === undefined) return false;
-    return this.highlighted.id === feed.id;
+  public isSticky(feed: IFeed): boolean {
+    if (this.sticky === undefined) return false;
+    return this.sticky.id === feed.id;
   }
 
-  public isHighlightedByUser(feed: IFeed): boolean {
-    return this.highlighted.id == feed.id;
+  public isStickyByUser(feed: IFeed): boolean {
+    if (this.stickyByUser == undefined) return false;
+    return this.stickyByUser.id == feed.id;
   }
 
   public showHotkeys(): void {

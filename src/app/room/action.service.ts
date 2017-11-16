@@ -145,8 +145,8 @@ export class ActionService {
     feed.setEnabledChannel(type, boolval);
   }
 
-  public highlightFeed(feedId: number): void {
-    this.store.dispatch(new feeds.HighlightFeedAction(feedId));
+  public toggleStickyFeed(feedId: number): void {
+    this.store.dispatch(new feeds.StickFeedAction(feedId));
   }
 
   private log(data): void {
