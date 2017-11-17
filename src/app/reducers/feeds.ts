@@ -10,13 +10,17 @@ export interface ISticky {
   byUser: boolean;
 }
 
+export interface IFeedMap {
+  [key: string]: IFeed;
+};
+
 export interface IState {
-  feeds: IFeed[];
+  feeds: IFeedMap;
   sticky: ISticky;
 }
 
 const initialState: IState = {
-  feeds: [],
+  feeds: {},
   sticky: {
     feedId: null,
     byUser: false
@@ -28,9 +32,10 @@ export function reducer(state: IState = initialState, action: feeds.Actions): IS
 
   switch (action.type) {
     case feeds.ENTER_ROOM: {
+      const feed: IFeed = action.payload;
       return {
         ...state,
-        feeds: [action.payload],
+        feeds: { [feed.id]: feed },
         sticky: {
           feedId: action.payload.id,
           byUser: false
@@ -39,28 +44,29 @@ export function reducer(state: IState = initialState, action: feeds.Actions): IS
     }
 
     case feeds.ADD_FEED: {
+      const feed: IFeed = action.payload;
       return {
         ...state,
-        feeds: [...state.feeds, action.payload]
+        feeds: {...state.feeds, [feed.id]: feed}
       };
     }
 
     case feeds.UPDATE_FEED: {
-      const newFeed: IFeed = action.payload;
+      const feed: IFeed = action.payload;
       return {
         ...state,
-        feeds: state.feeds.map(oldFeed => {
-          return oldFeed.id === newFeed.id ? newFeed : oldFeed;
-        })
+        feeds: {...state.feeds, [feed.id]: feed}
       };
     }
 
     case feeds.DESTROY_FEED: {
       const feedId: number = action.payload;
+      const cloned_feeds: IFeedMap = Object.assign({}, state.feeds);
+      delete cloned_feeds[feedId];
 
       return {
         ...state,
-        feeds: state.feeds.filter(feed => feed.id !== feedId)
+        feeds: cloned_feeds
       };
     }
 
@@ -84,15 +90,16 @@ export function reducer(state: IState = initialState, action: feeds.Actions): IS
   }
 }
 
-const getFeedById = (state: IState, feedId: number) => state.feeds.find(f => f.id === feedId);
+const getFeedById = (state: IState, feedId: number) => state.feeds[feedId];
+const compareFeeds = (a: IFeed, b: IFeed) => a.display.localeCompare(b.display);
 
-export const getFeeds = (state: IState) => state.feeds;
+export const getFeeds = (state: IState) => Object.values(state.feeds).sort(compareFeeds);
 
 export const getOwnFeed = (state: IState) => state.feeds[0];
 
 export const getStickyFeed = (state: IState) => {
   const { byUser, feedId }: ISticky = state.sticky;
-  const speaking: IFeed = state.feeds.find(f => f.speaking);
+  const speaking: IFeed = getFeeds(state).find(f => f.speaking);
   const feed: IFeed = getFeedById(state, feedId);
 
   if (feed === undefined) { // user disconnected
