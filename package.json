@@ -54,6 +54,7 @@
     "@angular/upgrade": "~2.4.0",
     "@ngrx/core": "^1.2.0",
     "@ngrx/effects": "^4.0.5",
+    "@ngrx/router-store": "^4.1.1",
     "@ngrx/store": "^4.0.3",
     "@ngrx/store-devtools": "^4.0.0",
     "angular2-modal": "~2.0.2",

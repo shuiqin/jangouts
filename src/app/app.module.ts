@@ -15,6 +15,8 @@ import { AppComponent } from "./app.component";
 import { StoreModule } from "@ngrx/store";
 import { StoreDevtoolsModule } from "@ngrx/store-devtools";
 import { EffectsModule } from "@ngrx/effects"
+import { StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
+import { CustomSerializer } from "./reducers/router";
 import { reducers, metaReducers } from "./reducers";
 import { ChatEffects } from "./effects/chat";
 import { RoomsEffects } from "./effects/rooms";
@@ -76,6 +78,7 @@ import { routing, appRoutingProviders } from "./app.routing";
       JsonpModule,
       StoreModule.forRoot(reducers, { metaReducers }),
       EffectsModule.forRoot([ChatEffects, RoomsEffects, UserEffects]),
+      StoreRouterConnectingModule,
       StoreDevtoolsModule.instrument() // TODO: do not use it on production
     ],
     providers: [
@@ -89,7 +92,8 @@ import { routing, appRoutingProviders } from "./app.routing";
       StatesService,
       Broadcaster,
       ScreenShareService,
-      UserService
+      UserService,
+      { provide: RouterStateSerializer, useClass: CustomSerializer }
     ],
     bootstrap: [AppComponent],
 })

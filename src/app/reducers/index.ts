@@ -1,21 +1,26 @@
 import { ActionReducerMap, MetaReducer, createSelector, createFeatureSelector } from "@ngrx/store";
+import { routerReducer, RouterReducerState } from "@ngrx/router-store";
+
 import * as fromChat from "./chat";
 import * as fromFeeds from "./feeds";
 import * as fromRooms from "./rooms";
 import * as fromUser from "./user";
+import * as fromRouter from "./router";
 
 export interface IState {
   chat: fromChat.IState;
   feeds: fromFeeds.IState;
   rooms: fromRooms.IState; // NGRX: include additional server info?
   user: fromUser.IState;
+  routerReducer: RouterReducerState<fromRouter.IRouterStateUrl>;
 };
 
 export const reducers: ActionReducerMap<IState> = {
   chat: fromChat.reducer,
   feeds: fromFeeds.reducer,
   rooms: fromRooms.reducer,
-  user: fromUser.reducer
+  user: fromUser.reducer,
+  routerReducer: routerReducer
 };
 
 /// export const metaReducers: MetaReducer<IState>[] = [storeFreeze];
