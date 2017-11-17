@@ -7,6 +7,7 @@ export interface IUserPrefs {
 export interface IUserSession {
   username: string;
   roomId: number;
+  status: string; // "ok", "failed" or null
 };
 
 export interface IUser {

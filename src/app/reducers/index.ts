@@ -61,7 +61,13 @@ export const getUserPrefs = createSelector(
   getUserState,
   fromUser.getUserPrefs
 );
+export const getUserSession = createSelector(
+  getUserState,
+  fromUser.getUserSession
+);
 export const getUsername = createSelector(
   getUserState,
   fromUser.getUsername
 );
+
+export const getRouterState = (state: IState) => state.routerReducer;

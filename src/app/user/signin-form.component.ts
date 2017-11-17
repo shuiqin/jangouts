@@ -44,6 +44,8 @@ import * as fromRoot from "../reducers";
 import { IRoom } from "../models/room";
 import { IUserPrefs } from "../models/user";
 
+import { SignInAction } from "../actions/user";
+
 @Component({
   selector: "jh-signin-form",
   template: require("./signin-form.component.html"),
@@ -80,16 +82,9 @@ export class SigninFormComponent implements OnInit {
   }
 
   public signin(): void {
-    if (this.roomId && this.username) {
-
-      let navigationExtras: NavigationExtras = {
-        queryParams: { "user": this.username},
-      };
-
-      this.router.navigate(["/rooms", this.roomId], navigationExtras);
-    }
+    const payload = { username: this.username, roomId: this.roomId };
+    this.store.dispatch(new SignInAction(payload));
   }
-
 }
 
 

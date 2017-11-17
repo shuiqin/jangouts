@@ -5,15 +5,15 @@
  * of the MIT license.  See the LICENSE.txt file for details.
  */
 import { Component, OnInit } from "@angular/core";
-import { Router, ActivatedRoute, NavigationExtras } from "@angular/router";
+import { Store } from "@ngrx/store";
 
 import { Broadcaster } from "../shared";
 import { BlockUIComponent} from "../block-ui";
 import { VideoChatComponent } from "../videochat";
 import { UserService } from "../user/user.service";
 
-import { Room } from "./room.model";
 import { RoomService } from "./room.service";
+import * as fromRoot from "../reducers";
 
 @Component({
   selector: "jh-room",
@@ -24,51 +24,17 @@ import { RoomService } from "./room.service";
   ]
 })
 export class RoomComponent implements OnInit {
+  private user: string;
 
-  public room: Room;
-  public user: any;
-
-  constructor(private roomService: RoomService,
-              private broadcaster: Broadcaster,
-              private userService: UserService,
-              private route: ActivatedRoute,
-              private router: Router) {
-
-  }
+  constructor(
+    private roomService: RoomService,
+    private store: Store<fromRoot.IState>,
+    private broadcaster: Broadcaster) {};
 
   public ngOnInit(): void {
-    this.room = this.roomService.getRoom();
-    this.user = this.userService.getUser();
-
-    if (this.room === null || this.user === null) {
-      /*
-       * Redirect to signin making sure room is included in the url
-       */
-      let navigationExtras: NavigationExtras = {};
-      if (this.room) {
-          navigationExtras["queryParams"] = { "room": this.room.id}; // tslint:disable-line
-      }
-      this.router.navigate(["/sign_in"], navigationExtras);
-
-    } else {
-      /* Set last room */
-      this.userService.setSetting("lastRoom", this.roomService.getRoom().id);
-
-
-      if (this.user === null && this.route.snapshot.queryParams["user"] === undefined) { // tslint:disable-line
-        /*
-         * Make sure the url includes the user (to allow bookmarking)
-         */
-
-        let navigationExtras: NavigationExtras = {
-          queryParams: { "user": this.user.username},
-        };
-        this.router.navigate(["/rooms", this.room.id], navigationExtras);
-
-      } else {
-        this.roomService.enter(this.user.username);
-      }
-    }
+    let username: string;
+    this.store.select(fromRoot.getUsername).take(1).subscribe(v => username = v);
+    this.roomService.enter(username);
 
     this.setEvents();
     this.setKeybindings();
