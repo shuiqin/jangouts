@@ -6,6 +6,7 @@
  */
 
 import { Injectable } from "@angular/core";
+import { IUserPrefs } from "../models/user";
 
 const USER_SETTINGS_KEY: string = "userSettings";
 
@@ -17,7 +18,7 @@ interface IUSER {
 export class UserService {
 
   public user: IUSER = null;
-  public settings: any = {};
+  public settings = <IUserPrefs>{};
 
   constructor() {
     this.settings = this.get(USER_SETTINGS_KEY) || {};
@@ -46,7 +47,7 @@ export class UserService {
    * Get all user settings.
    * @returns {object} An object containing all the settings.
    */
-  public getSettings(): any {
+  public getSettings(): IUserPrefs {
     return this.settings;
   }
 
@@ -73,7 +74,7 @@ export class UserService {
    * Clear user settings.
    */
   public clearSettings(): void {
-    this.settings = {};
+    this.settings = <IUserPrefs>{};
     this.storeSettings();
   }
 

@@ -33,12 +33,16 @@ function jhSigninFormLink(scope, element) {
 
 import { Component, OnInit } from "@angular/core";
 import { Router, ActivatedRoute, NavigationExtras } from "@angular/router";
+import { Store } from "@ngrx/store";
+import { Observable } from "rxjs/Observable";
 
-import { RoomService, Room } from "../room";
 import { ScreenShareHintComponent } from "../screen-share";
 import { ThumbnailsModeButtonComponent } from "../videochat";
 import { BrowserInfoComponent } from "../browser-info";
-import { UserService } from "./user.service";
+
+import * as fromRoot from "../reducers";
+import { IRoom } from "../models/room";
+import { IUserPrefs } from "../models/user";
 
 @Component({
   selector: "jh-signin-form",
@@ -49,50 +53,40 @@ import { UserService } from "./user.service";
     BrowserInfoComponent
   ]
 })
+
 export class SigninFormComponent implements OnInit {
-
-  public rooms: Room[] = [];
-  public room: Room = null;
+  public rooms$: Observable<IRoom[]>;
   public username: string = null;
-  public showRoomsList: boolean = true;
+  public roomId: number;
+  public userPrefsSubscription: any;
+  public userPrefs: IUserPrefs;
 
-
-  constructor(private roomService: RoomService,
-              private userService: UserService,
-              private route: ActivatedRoute,
-              private router: Router) {
-  }
+  constructor(
+    private store: Store<fromRoot.IState>,
+    private route: ActivatedRoute,
+    private router: Router) {}
 
   public ngOnInit(): void {
+    this.rooms$ = this.store.select(fromRoot.getRooms);
 
-    this.roomService.getRooms().then((rooms) => {
-      this.room = this.roomService.getRoom();
-      this.rooms = rooms;
-
-      if (this.userService.getUser() !== null) {
-        this.username = this.userService.getUser().username;
-      }
-
-      if (this.room === null) {
-        let lastRoomId: number = this.userService.getSetting("lastRoom");
-        this.room = _.find(this.rooms, (room: Room) => {
-          return room.id === lastRoomId;
-        });
-      }
-
-      this.showRoomsList = this.room === null;
+    this.userPrefsSubscription = this.store.select(fromRoot.getUserPrefs).subscribe(p => {
+      this.username = this.username || p.lastUsername;
+      this.roomId = this.roomId || p.lastRoom;
     });
   }
 
+  public ngOnDestroy(): void {
+    this.userPrefsSubscription.unsubscribe();
+  }
+
   public signin(): void {
-    if (this.room && this.username) {
+    if (this.roomId && this.username) {
 
       let navigationExtras: NavigationExtras = {
         queryParams: { "user": this.username},
       };
 
-      this.router.navigate(["/rooms", this.room.id], navigationExtras);
-
+      this.router.navigate(["/rooms", this.roomId], navigationExtras);
     }
   }
 

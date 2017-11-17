@@ -14,18 +14,17 @@
              autofocus
              placeholder="Username">
     </div>
+
     <div class="form-group">
       <label class="sr-only" for="inputRoom">Room</label>
-      <!--<span *ngIf="!showRoomList && room">{{ room.label }}</span>-->
-        <!--*ngIf="showRoomsList"-->
       <select
         id="inputRoom"
         class="form-control input-lg"
-        [(ngModel)]="room"
-        name="room"
+        [(ngModel)]="roomId"
+        name="roomId"
         required="true">
         <option value="" disabled selected>Select a room</option>
-        <option *ngFor="let roomopt of rooms" [ngValue]="roomopt">{{roomopt.label}}</option>
+        <option *ngFor="let roomopt of (rooms$ | async)" [ngValue]="roomopt.id">{{roomopt.label}}</option>
       </select>
     </div>
     <!--[TODO] Add textTemplate support for thumbnails mode button-->

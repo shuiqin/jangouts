@@ -16,6 +16,8 @@ import {
 import { SigninFormComponent } from "./user";
 import { RoomComponent } from "./room";
 import { StatesService } from "./router";
+import { RoomsGuard } from "./router/rooms.guard";
+import { UserPrefsGuard } from "./router/user-prefs.guard";
 
 @Injectable()
 export class UserRoomResolver {
@@ -33,6 +35,7 @@ export class UserRoomResolver {
 const appRoutes: Routes = [
   {
     path: "sign_in",
+    canActivate: [RoomsGuard, UserPrefsGuard],
     component: SigninFormComponent,
     resolve: {
       state: UserRoomResolver
@@ -50,7 +53,9 @@ const appRoutes: Routes = [
 
 export const appRoutingProviders: any[] = [
   UserRoomResolver,
-  StatesService
+  StatesService,
+  RoomsGuard,
+  UserPrefsGuard
 ];
 
 export const routing: any = RouterModule.forRoot(appRoutes, { useHash: true });

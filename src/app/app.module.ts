@@ -17,6 +17,8 @@ import { StoreDevtoolsModule } from "@ngrx/store-devtools";
 import { EffectsModule } from "@ngrx/effects"
 import { reducers, metaReducers } from "./reducers";
 import { ChatEffects } from "./effects/chat";
+import { RoomsEffects } from "./effects/rooms";
+import { UserEffects } from "./effects/user";
 
 import { ConfigService } from "./config.provider";
 
@@ -73,7 +75,7 @@ import { routing, appRoutingProviders } from "./app.routing";
       CommonModule,
       JsonpModule,
       StoreModule.forRoot(reducers, { metaReducers }),
-      EffectsModule.forRoot([ChatEffects]),
+      EffectsModule.forRoot([ChatEffects, RoomsEffects, UserEffects]),
       StoreDevtoolsModule.instrument() // TODO: do not use it on production
     ],
     providers: [

@@ -16,6 +16,7 @@ import { ConfigService } from "../config.provider";
 import { DataChannelService } from "./data-channel.service";
 import { ActionService } from "./action.service";
 import { Room } from "./room.model";
+import { IRoom, roomToIRoom } from "../models/room";
 
 /*
  * Service to communication with janus room
@@ -262,8 +263,8 @@ export class RoomService {
     return this.room;
   }
 
-  public getRooms(): Promise<any> {
-    let promise: Promise<any> = new Promise<any>((resolve, reject) => {
+  public getRooms(): Promise<IRoom[]> {
+    return new Promise<IRoom[]>((resolve, reject) => {
       if (this.rooms === null) {
         this.connect().then((): void => {
           this.doGetRooms().then((rooms: Array<Room>): void => {
@@ -275,8 +276,6 @@ export class RoomService {
         resolve(this.rooms);
       }
     });
-
-    return promise;
   }
 
   public subscribeToFeeds(list: Array<Feed>): void {
