@@ -23,11 +23,13 @@ export interface IFeedMap {
 
 export interface IState {
   feeds: IFeedMap;
+  mainFeedId: number;
   sticky: ISticky;
 }
 
 const initialState: IState = {
   feeds: {},
+  mainFeedId: null,
   sticky: {
     feedId: null,
     byUser: false
@@ -43,6 +45,7 @@ export function reducer(state: IState = initialState, action: feeds.Actions): IS
       return {
         ...state,
         feeds: { [feed.id]: feed },
+        mainFeedId: feed.id,
         sticky: {
           feedId: action.payload.id,
           byUser: false
@@ -102,7 +105,7 @@ const compareFeeds = (a: IFeed, b: IFeed) => a.display.localeCompare(b.display);
 
 export const getFeeds = (state: IState) => Object.values(state.feeds).sort(compareFeeds);
 
-export const getOwnFeed = (state: IState) => state.feeds[0];
+export const getMainFeed = (state: IState) => state.feeds[state.mainFeedId];
 
 export const getStickyFeed = (state: IState) => {
   const { byUser, feedId }: ISticky = state.sticky;
@@ -110,7 +113,7 @@ export const getStickyFeed = (state: IState) => {
   const feed: IFeed = getFeedById(state, feedId);
 
   if (feed === undefined) { // user disconnected
-    return (speaking && speaking.videoEnabled) ? speaking : getOwnFeed(state);
+    return (speaking && speaking.videoEnabled) ? speaking : getMainFeed(state);
   }
 
   return byUser ? feed : (speaking || feed);
