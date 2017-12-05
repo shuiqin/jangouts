@@ -1,3 +1,18 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Troubleshooting
 
 ## The browser javascript console
