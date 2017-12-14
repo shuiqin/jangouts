@@ -1,7 +1,7 @@
 {
-  "janusServer": "http://10.5.236.6:8088/janus",
-  "janusServerSSL": null,
-  "janusDebug": false,
+  "janusServer": "http://10.5.236.6:8088/mediaserver",
+  "janusServerSSL": "https://10.5.236.6:8089/mediaserver",
+  "janusDebug": true,
   "httpsAvailable": true,
   "httpsUrl": null,
   "videoThumbnails": true,
